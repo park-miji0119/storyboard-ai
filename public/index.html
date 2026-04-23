@@ -239,9 +239,7 @@ async function extractFromScenario(scenario, mode, anthropicKey){
   return JSON.parse(match[0]);
 }
 function renderCards(extracted, mode){
-  const freepikKey = document.getElementById('freepikKey').value.trim();
-  const stylePrompt = document.getElementById('stylePrompt').value.trim();
-  const aspectRatio = document.getElementById('aspectRatio').value;
+  function renderCards(extracted, mode){
   const container = document.getElementById('results');
   let html = '';
   const showChars = mode === 'characters' || mode === 'all';
@@ -249,10 +247,22 @@ function renderCards(extracted, mode){
   if(showChars && extracted.characters.length > 0){
     html += `<div class="section-title">👤 캐릭터 (${extracted.characters.length}명)</div><div class="image-grid">`;
     extracted.characters.forEach(c => {
-      const fp = (c.prompt + ', ' + stylePrompt).replace(/`/g,'\\`').replace(/'/g,"\\x27");
-      html += `<div class="image-card"><div class="image-card-head"><div class="image-card-name">${c.name}</div><div class="image-card-type">CHARACTER · ${c.description}</div></div><div class="image-box loading" id="img-${c.id}"><div class="spinner"></div><span style="font-size:11px;color:var(--text2);">생성 중...</span></div><div class="image-card-foot"><div class="prompt-mini">${c.prompt}</div><div style="display:flex;gap:6px;margin-top:6px;"><button class="copy-btn" style="background:rgba(200,145,58,0.15);border-color:var(--accent);color:var(--accent);" onclick="regenerateItem('${c.id}', \`${fp}\`)">🔄 재생성</button><button class="copy-btn" onclick="copyText(this,\`${c.prompt.replace(/`/g,'\\`').replace(/'/g,"\\x27")}\`)">복사</button></div></div></div>`;
+      const sp = document.getElementById('stylePrompt').value.trim();
+      const fp = (c.prompt + ', ' + sp).replace(/`/g,'\\`').replace(/'/g,"\\x27");
+      html += `<div class="image-card"><div class="image-card-head"><div class="image-card-name">${c.name}</div><div class="image-card-type">CHARACTER · ${c.description}</div></div><div class="image-box loading" id="img-${c.id}"><div class="spinner"></div><span style="font-size:11px;color:var(--text2);">생성 중...</span></div><div class="image-card-foot"><div class="prompt-mini">${c.prompt}</div><div style="display:flex;gap:6px;margin-top:6px;"><button class="copy-btn" style="background:rgba(200,145,58,0.15);border-color:var(--accent);color:var(--accent);" onclick="regenerateItem('${c.id}',\`${fp}\`)">🔄 재생성</button><button class="copy-btn" onclick="copyText(this,\`${c.prompt.replace(/`/g,'\\`').replace(/'/g,"\\x27")}\`)">복사</button></div></div></div>`;
     });
     html += `</div>`;
+  }
+  if(showBgs && extracted.backgrounds.length > 0){
+    html += `<div class="section-title">🌄 배경 (${extracted.backgrounds.length}개)</div><div class="image-grid">`;
+    extracted.backgrounds.forEach(b => {
+      const fp = (b.prompt + ', NO humans, NO people, NO figures, empty location only, cinematic 8K, dramatic lighting, ancient Middle Eastern setting, hyperrealistic environment render').replace(/`/g,'\\`').replace(/'/g,"\\x27");
+      html += `<div class="image-card"><div class="image-card-head"><div class="image-card-name">${b.name}</div><div class="image-card-type">BACKGROUND · ${b.description}</div></div><div class="image-box loading" id="img-${b.id}"><div class="spinner"></div><span style="font-size:11px;color:var(--text2);">생성 중...</span></div><div class="image-card-foot"><div class="prompt-mini">${b.prompt}</div><div style="display:flex;gap:6px;margin-top:6px;"><button class="copy-btn" style="background:rgba(200,145,58,0.15);border-color:var(--accent);color:var(--accent);" onclick="regenerateItem('${b.id}',\`${fp}\`)">🔄 재생성</button><button class="copy-btn" onclick="copyText(this,\`${b.prompt.replace(/`/g,'\\`').replace(/'/g,"\\x27")}\`)">복사</button></div></div></div>`;
+    });
+    html += `</div>`;
+  }
+  container.innerHTML = html || '<div class="empty"><div>추출된 항목이 없어요</div></div>';
+}
   }
   if(showBgs && extracted.backgrounds.length > 0){
     html += `<div class="section-title">🌄 배경 (${extracted.backgrounds.length}개)</div><div class="image-grid">`;
