@@ -54,9 +54,10 @@
   .image-card-head { padding: 12px 14px; background: var(--bg3); border-bottom: 1px solid var(--border); }
   .image-card-name { font-size: 13px; font-weight: 500; }
   .image-card-type { font-size: 10px; color: var(--text2); letter-spacing: 1px; margin-top: 2px; }
-  .image-box { min-height: 160px; display: flex; align-items: center; justify-content: center; background: var(--bg); }
-  .image-box img { width: 100%; display: block; }
-  .image-box.loading { color: var(--text2); font-size: 12px; flex-direction: column; gap: 10px; }
+  .image-box { min-height: 160px; display: flex; align-items: center; justify-content: center; background: var(--bg); position: relative; overflow: hidden; }
+  .image-box img { width: 100%; display: block; cursor: zoom-in; transition: transform 0.2s; }
+  .image-box img:hover { transform: scale(1.02); }
+  .image-box.loading { flex-direction: column; gap: 10px; }
   .spinner { width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .image-card-foot { padding: 10px 14px; }
@@ -66,12 +67,23 @@
   .error-msg { color: #e07070; font-size: 12px; padding: 8px 14px; }
   .empty { text-align: center; padding: 60px; color: var(--text2); }
   .empty-icon { font-size: 48px; opacity: 0.3; margin-bottom: 12px; }
+  .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+  .lightbox.show { display: flex; }
+  .lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,0.8); }
+  .lightbox-close { position: fixed; top: 20px; right: 24px; font-size: 32px; color: var(--text2); cursor: pointer; line-height: 1; transition: color 0.2s; background: none; border: none; }
+  .lightbox-close:hover { color: var(--text); }
+  .lightbox-name { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); font-family: 'Cinzel', serif; font-size: 14px; color: var(--accent); letter-spacing: 2px; }
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 </style>
 </head>
 <body>
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt="" onclick="event.stopPropagation()"/>
+  <div class="lightbox-name" id="lightboxName"></div>
+</div>
 <div class="container">
   <header>
     <div class="header-inner">
@@ -104,11 +116,11 @@
     <div class="panel">
       <div class="panel-head">🎨 스타일 고정값</div>
       <div class="panel-body">
-        <textarea id="stylePrompt" rows="6" style="font-family:monospace;font-size:12px;color:#a0c0e0;">3D CGI character render, semi-realistic animation style, realistic skin texture with subtle pores, slightly expressive eyes but anatomically grounded, cinematic movie quality 3D render, style of Disney live-action CG hybrid, semi-realistic CG film, cinematic 8K, NOT cartoon, NOT over-stylized, dramatic cinematic lighting</textarea>
+        <textarea id="stylePrompt" rows="6" style="font-family:monospace;font-size:12px;color:#a0c0e0;">hyperrealistic 3D CGI render, ONE single person only, solo portrait, photorealistic skin texture with pores and subsurface scattering, anatomically correct facial proportions, NOT cartoon, NOT anime, NOT stylized, NOT over-expressive eyes, cinematic 8K quality, dramatic cinematic lighting, ancient Middle Eastern costume</textarea>
         <div class="style-tip">
-          💡 이 스타일이 모든 이미지에 자동 적용돼요<br>
-          캐릭터: 인물 단독 + 단순 배경<br>
-          배경: 인물 없는 배경씬만
+          💡 모든 이미지에 자동 적용<br>
+          캐릭터: 단일 인물 단독 이미지<br>
+          배경: 인물 없는 배경씬
         </div>
         <div style="margin-top:12px;">
           <label style="font-size:11px;color:var(--text2);letter-spacing:1px;">이미지 비율</label>
@@ -137,8 +149,7 @@
   <div id="results">
     <div class="empty"><div class="empty-icon">🎬</div><div>시나리오를 입력하고 생성 버튼을 누르세요</div></div>
   </div>
-</div>
-<script>
+</div><script>
 window.addEventListener('DOMContentLoaded', () => {
   const ak = localStorage.getItem('anthropic_key');
   const fk = localStorage.getItem('freepik_key');
@@ -153,6 +164,17 @@ document.getElementById('freepikKey').addEventListener('input', function(){
   document.getElementById('freepikDot').className = 'api-dot' + (this.value.length > 10 ? ' on' : '');
   if(this.value.length > 10) localStorage.setItem('freepik_key', this.value);
 });
+function openLightbox(url, name){
+  document.getElementById('lightboxImg').src = url;
+  document.getElementById('lightboxName').textContent = name;
+  document.getElementById('lightbox').className = 'lightbox show';
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(){
+  document.getElementById('lightbox').className = 'lightbox';
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
 function setProgress(pct, text){
   document.getElementById('progressFill').style.width = pct + '%';
   document.getElementById('progressPct').textContent = pct + '%';
@@ -172,7 +194,7 @@ async function generate(mode) {
   document.getElementById('results').innerHTML = '';
   setProgress(5, '시나리오 분석 중...');
   try {
-    const extracted = await extractFromScenario(scenario, stylePrompt, mode, anthropicKey);
+    const extracted = await extractFromScenario(scenario, mode, anthropicKey);
     setProgress(30, '프롬프트 생성 완료!');
     renderCards(extracted, mode);
     const target = mode === 'characters' ? extracted.characters : mode === 'backgrounds' ? extracted.backgrounds : extracted.characters.concat(extracted.backgrounds);
@@ -185,22 +207,26 @@ async function generate(mode) {
       try {
         const finalPrompt = item.prompt + ', ' + stylePrompt;
         const url = await generateImage(finalPrompt, freepikKey, aspectRatio);
-        cardImg.innerHTML = url ? `<img src="${url}" alt="${item.name}" loading="lazy"/>` : `<div style="color:var(--text2);font-size:12px;padding:16px;">이미지 생성 실패</div>`;
+        if(url){
+          cardImg.innerHTML = `<img src="${url}" alt="${item.name}" loading="lazy" onclick="openLightbox('${url}', '${item.name}')"/>`;
+        } else {
+          cardImg.innerHTML = `<div style="color:var(--text2);font-size:12px;padding:16px;">이미지 생성 실패</div>`;
+        }
       } catch(e){ cardImg.innerHTML = `<div class="error-msg">⚠ ${e.message}</div>`; }
     }
     setProgress(100, '완료!');
   } catch(e){ alert('오류: ' + e.message); }
   document.querySelectorAll('.btn').forEach(b => b.disabled = false);
 }
-async function extractFromScenario(scenario, stylePrompt, mode, anthropicKey){
+async function extractFromScenario(scenario, mode, anthropicKey){
   const modeText = mode === 'characters' ? '등장인물만' : mode === 'backgrounds' ? '배경만' : '등장인물과 배경 모두';
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-api-key': anthropicKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
     body: JSON.stringify({
       model: 'claude-sonnet-4-20250514',
-      max_tokens: 3000,
-      messages: [{ role: 'user', content: `다음 시나리오에서 ${modeText}를 추출해서 Seedream 4.5 이미지 프롬프트를 만들어줘.\n\n시나리오:\n${scenario}\n\n규칙:\n- 캐릭터: 인물 한 명만 단독으로 나오는 이미지 (solo portrait, simple background)\n- 배경: 인물 없는 배경씬만 (empty scene, no people)\n- 프롬프트는 반드시 영어로\n- 중복 인물/배경 제거\n\n다음 JSON 형식으로만 응답:\n{"characters":[{"id":"char_1","name":"이름(한국어)","type":"character","description":"한줄설명","prompt":"영어프롬프트"}],"backgrounds":[{"id":"bg_1","name":"이름(한국어)","type":"background","description":"한줄설명","prompt":"영어프롬프트"}]}` }]
+      max_tokens: 4000,
+      messages: [{ role: 'user', content: `다음 시나리오에서 ${modeText}를 추출해서 Seedream 4.5 이미지 프롬프트를 만들어줘.\n\n시나리오:\n${scenario}\n\n중요 규칙:\n1. 캐릭터는 반드시 한 명씩 개별로 추출 (예: 정탐꾼들 → 정탐꾼 1, 정탐꾼 2로 분리 / 라합의 가족 → 아버지, 어머니, 여동생으로 분리)\n2. 같은 인물이 여러 번 나와도 한 번만 추출\n3. 캐릭터 프롬프트: 반드시 solo, one person only, single character 포함\n4. 배경 프롬프트: 반드시 empty scene, no people, no characters 포함\n5. 모든 프롬프트는 영어로\n6. 하이퍼리얼리즘 묘사 위주로\n\nJSON 형식으로만 응답:\n{"characters":[{"id":"char_1","name":"이름(한국어)","type":"character","description":"한줄설명","prompt":"solo, one person only, [인물 외모/의상/감정 상세 묘사], hyperrealistic, photorealistic skin, ancient Middle Eastern setting"}],"backgrounds":[{"id":"bg_1","name":"배경이름(한국어)","type":"background","description":"한줄설명","prompt":"empty scene no people, [장소/시간/분위기 상세 묘사], hyperrealistic, cinematic establishing shot"}]}` }]
     })
   });
   const data = await res.json();
@@ -216,12 +242,12 @@ function renderCards(extracted, mode){
   const showBgs = mode === 'backgrounds' || mode === 'all';
   if(showChars && extracted.characters.length > 0){
     html += `<div class="section-title">👤 캐릭터 (${extracted.characters.length}명)</div><div class="image-grid">`;
-    extracted.characters.forEach(c => { html += `<div class="image-card"><div class="image-card-head"><div class="image-card-name">${c.name}</div><div class="image-card-type">CHARACTER · ${c.description}</div></div><div class="image-box loading" id="img-${c.id}"><div class="spinner"></div><span style="font-size:11px;">생성 중...</span></div><div class="image-card-foot"><div class="prompt-mini">${c.prompt}</div><button class="copy-btn" onclick="copyText(this,\`${c.prompt.replace(/`/g,'\\`')}\`)">복사</button></div></div>`; });
+    extracted.characters.forEach(c => { html += `<div class="image-card"><div class="image-card-head"><div class="image-card-name">${c.name}</div><div class="image-card-type">CHARACTER · ${c.description}</div></div><div class="image-box loading" id="img-${c.id}"><div class="spinner"></div><span style="font-size:11px;color:var(--text2);">생성 중...</span></div><div class="image-card-foot"><div class="prompt-mini">${c.prompt}</div><button class="copy-btn" onclick="copyText(this,\`${c.prompt.replace(/`/g,'\\`').replace(/'/g,"\\x27")}\`)">복사</button></div></div>`; });
     html += `</div>`;
   }
   if(showBgs && extracted.backgrounds.length > 0){
     html += `<div class="section-title">🌄 배경 (${extracted.backgrounds.length}개)</div><div class="image-grid">`;
-    extracted.backgrounds.forEach(b => { html += `<div class="image-card"><div class="image-card-head"><div class="image-card-name">${b.name}</div><div class="image-card-type">BACKGROUND · ${b.description}</div></div><div class="image-box loading" id="img-${b.id}"><div class="spinner"></div><span style="font-size:11px;">생성 중...</span></div><div class="image-card-foot"><div class="prompt-mini">${b.prompt}</div><button class="copy-btn" onclick="copyText(this,\`${b.prompt.replace(/`/g,'\\`')}\`)">복사</button></div></div>`; });
+    extracted.backgrounds.forEach(b => { html += `<div class="image-card"><div class="image-card-head"><div class="image-card-name">${b.name}</div><div class="image-card-type">BACKGROUND · ${b.description}</div></div><div class="image-box loading" id="img-${b.id}"><div class="spinner"></div><span style="font-size:11px;color:var(--text2);">생성 중...</span></div><div class="image-card-foot"><div class="prompt-mini">${b.prompt}</div><button class="copy-btn" onclick="copyText(this,\`${b.prompt.replace(/`/g,'\\`').replace(/'/g,"\\x27")}\`)">복사</button></div></div>`; });
     html += `</div>`;
   }
   container.innerHTML = html || '<div class="empty"><div>추출된 항목이 없어요</div></div>';
