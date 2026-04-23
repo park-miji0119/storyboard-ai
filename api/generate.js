@@ -15,7 +15,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
         'x-freepik-api-key': freepik_key
       },
-      body: JSON.stringify({ prompt, aspect_ratio: ({'16:9':'widescreen_16_9','9:16':'social_story_9_16','1:1':'square_1_1','4:3':'traditional_3_4'})[aspect_ratio] || 'widescreen_16_9' })
+      body: JSON.stringify({ prompt, aspect_ratio: ({'16:9':'widescreen_16_9','9:16':'social_story_9_16','1:1':'square_1_1','4:3':'traditional_3_4'})[aspect_ratio] || 'widescreen_16_9', resolution: 'high' })
     });
 
     const startData = await startRes.json();
