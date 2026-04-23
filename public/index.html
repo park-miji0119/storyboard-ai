@@ -205,7 +205,10 @@ async function generate(mode) {
       const cardImg = document.getElementById('img-' + item.id);
       if(!cardImg) continue;
       try {
-        const finalPrompt = item.prompt + ', ' + stylePrompt;
+        const isBackground = item.type === 'background';
+const finalPrompt = isBackground
+  ? item.prompt + ', NO humans, NO people, NO figures, empty location only, cinematic 8K, dramatic lighting, ancient Middle Eastern setting, hyperrealistic environment render'
+  : item.prompt + ', ' + stylePrompt;
         const url = await generateImage(finalPrompt, freepikKey, aspectRatio);
         if(url){
           cardImg.innerHTML = `<img src="${url}" alt="${item.name}" loading="lazy" onclick="openLightbox('${url}', '${item.name}')"/>`;
