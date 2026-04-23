@@ -30,24 +30,34 @@ header { padding: 36px 0 24px; border-bottom: 1px solid var(--border); margin-bo
 .api-input { flex: 1; background: none; border: none; color: var(--text); font-size: 13px; font-family: 'Noto Sans KR', sans-serif; outline: none; }
 .api-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border2); transition: background 0.3s; flex-shrink: 0; }
 .api-dot.active { background: var(--success); box-shadow: 0 0 6px var(--success); }
-.control-row { display: flex; gap: 10px; margin-bottom: 28px; align-items: center; }
-.ratio-select { background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-size: 13px; font-family: 'Noto Sans KR', sans-serif; outline: none; cursor: pointer; }
-.scenario-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 28px; }
-.scenario-label { padding: 12px 18px 0; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); }
-.scenario-input { width: 100%; background: none; border: none; color: var(--text); font-size: 13.5px; font-family: 'Noto Sans KR', sans-serif; font-weight: 300; line-height: 1.75; padding: 12px 18px 18px; resize: vertical; min-height: 160px; outline: none; }
-.scenario-input::placeholder { color: var(--text3); }
+
+/* ─── 컨트롤 ─── */
+.control-row { display: flex; gap: 10px; margin-bottom: 28px; align-items: center; flex-wrap: wrap; }
+.control-group { display: flex; gap: 6px; align-items: center; background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 4px; }
+.control-label { font-size: 10px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; padding: 0 8px; white-space: nowrap; }
+.toggle-btn { padding: 7px 14px; border-radius: 7px; border: none; background: transparent; color: var(--text2); font-size: 12px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.toggle-btn.active { background: var(--bg2); color: var(--text); border: 1px solid var(--border2); }
+.toggle-btn:hover:not(.active) { color: var(--text); }
+
 .btn { padding: 11px 22px; border-radius: 8px; border: none; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-size: 13px; font-weight: 500; letter-spacing: 0.5px; transition: all 0.2s; display: inline-flex; align-items: center; gap: 7px; }
 .btn-primary { background: linear-gradient(135deg, var(--accent), var(--red)); color: #fff; box-shadow: 0 3px 14px rgba(200,145,58,0.25); }
 .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 5px 20px rgba(200,145,58,0.35); }
 .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
 .btn-outline { background: transparent; border: 1px solid var(--border2); color: var(--text2); }
 .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+.scenario-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 28px; }
+.scenario-label { padding: 12px 18px 0; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); }
+.scenario-input { width: 100%; background: none; border: none; color: var(--text); font-size: 13.5px; font-family: 'Noto Sans KR', sans-serif; font-weight: 300; line-height: 1.75; padding: 12px 18px 18px; resize: vertical; min-height: 160px; outline: none; }
+.scenario-input::placeholder { color: var(--text3); }
 .progress-bar { width: 100%; height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 28px; overflow: hidden; display: none; }
 .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--red)); border-radius: 2px; transition: width 0.4s ease; width: 0%; }
 .progress-bar.active { display: block; }
 .status-msg { text-align: center; font-size: 12px; color: var(--text2); margin-bottom: 20px; min-height: 18px; letter-spacing: 0.5px; }
 .section-title { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--text3); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
 .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ─── 그리드 ─── */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-bottom: 48px; }
 .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: border-color 0.2s, transform 0.2s; }
 .card:hover { border-color: var(--border2); transform: translateY(-2px); }
@@ -55,8 +65,11 @@ header { padding: 36px 0 24px; border-bottom: 1px solid var(--border); margin-bo
 .card-name { font-size: 13px; font-weight: 500; color: var(--text); }
 .card-type { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-top: 2px; }
 .card-type.bg-type { color: var(--red2); }
-.image-box { width: 100%; aspect-ratio: 16/9; background: var(--bg2); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; position: relative; overflow: hidden; }
-.image-box.portrait { aspect-ratio: 2/3; }
+
+/* ─── 이미지 박스 ─── */
+.image-box { width: 100%; background: var(--bg2); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 8px; position: relative; overflow: hidden; }
+.image-box.ratio-916 { aspect-ratio: 9/16; }
+.image-box.ratio-169 { aspect-ratio: 16/9; }
 .image-box img { width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; transition: transform 0.3s; }
 .image-box img:hover { transform: scale(1.03); }
 .image-box.loading { background: var(--bg3); }
@@ -71,30 +84,29 @@ header { padding: 36px 0 24px; border-bottom: 1px solid var(--border); margin-bo
 .btn-regen { flex: 1; padding: 7px 10px; background: rgba(200,145,58,0.1); border: 1px solid rgba(200,145,58,0.3); border-radius: 6px; color: var(--accent); font-size: 11px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; }
 .btn-regen:hover { background: rgba(200,145,58,0.18); border-color: var(--accent); }
 .btn-regen:disabled { opacity: 0.4; cursor: not-allowed; }
-.btn-down { padding: 7px 10px; background: rgba(58,139,90,0.1); border: 1px solid rgba(58,139,90,0.3); border-radius: 6px; color: #70c090; font-size: 11px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.btn-down { padding: 7px 10px; background: rgba(58,139,90,0.1); border: 1px solid rgba(58,139,90,0.3); border-radius: 6px; color: #70c090; font-size: 11px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.2s; }
 .btn-down:hover { background: rgba(58,139,90,0.2); border-color: #70c090; }
 .btn-copy { padding: 7px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; color: var(--text3); font-size: 11px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
 .btn-copy:hover { color: var(--text2); border-color: var(--border2); }
-.error-card { padding: 14px 16px; background: rgba(139,32,32,0.1); border: 1px solid rgba(139,32,32,0.3); border-radius: 8px; font-size: 12px; color: #e06060; margin: 12px 14px; }
+.error-card { padding: 12px 14px; background: rgba(139,32,32,0.1); border: 1px solid rgba(139,32,32,0.3); border-radius: 8px; font-size: 12px; color: #e06060; margin: 10px 14px; }
 .empty { text-align: center; padding: 60px 20px; color: var(--text3); font-size: 13px; grid-column: 1 / -1; }
 .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 1000; align-items: center; justify-content: center; cursor: zoom-out; backdrop-filter: blur(4px); }
 .lightbox.open { display: flex; }
 .lightbox img { max-width: 92vw; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 20px 80px rgba(0,0,0,0.8); cursor: default; }
-.lightbox-close { position: fixed; top: 20px; right: 24px; color: rgba(255,255,255,0.6); font-size: 28px; cursor: pointer; line-height: 1; transition: color 0.2s; }
+.lightbox-close { position: fixed; top: 20px; right: 24px; color: rgba(255,255,255,0.6); font-size: 28px; cursor: pointer; transition: color 0.2s; }
 .lightbox-close:hover { color: #fff; }
 .lightbox-down { position: fixed; top: 18px; right: 64px; background: rgba(58,139,90,0.2); border: 1px solid rgba(58,139,90,0.5); color: #70c090; padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: all 0.2s; }
 .lightbox-down:hover { background: rgba(58,139,90,0.35); }
 .lightbox-caption { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); font-size: 12px; color: rgba(255,255,255,0.45); letter-spacing: 1px; }
 .alert { padding: 12px 16px; border-radius: 8px; font-size: 12.5px; margin-bottom: 16px; display: none; }
 .alert.error { display: block; background: rgba(139,32,32,0.15); border: 1px solid rgba(139,32,32,0.4); color: #e07070; }
-.alert.info { display: block; background: rgba(58,139,90,0.12); border: 1px solid rgba(58,139,90,0.3); color: #70c090; }
 </style>
 </head>
 <body>
 
 <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
   <span class="lightbox-close" onclick="closeLightboxDirect()">✕</span>
-  <button class="lightbox-down" id="lightbox-down-btn" onclick="downloadFromLightbox()">⬇ 다운로드</button>
+  <button class="lightbox-down" onclick="downloadFromLightbox()">⬇ 다운로드</button>
   <img id="lightbox-img" src="" alt="">
   <div class="lightbox-caption" id="lightbox-caption"></div>
 </div>
@@ -123,36 +135,44 @@ header { padding: 36px 0 24px; border-bottom: 1px solid var(--border); margin-bo
     </div>
   </div>
 
+  <!-- 컨트롤 -->
   <div class="control-row">
-    <select class="ratio-select" id="aspectRatio">
-      <option value="16_9">16:9 — 가로형 (배경)</option>
-      <option value="2_3">2:3 — 세로형 (인물)</option>
-      <option value="1_1">1:1 — 정방형</option>
-      <option value="4_3">4:3 — 표준</option>
-    </select>
-    <button class="btn btn-primary" id="generateBtn" onclick="runGenerate()">
-      <span>✦</span> 전체 생성
-    </button>
+    <!-- 비율 선택 -->
+    <div class="control-group">
+      <span class="control-label">비율</span>
+      <button class="toggle-btn active" id="ratio-169" onclick="setRatio('16_9')">16:9</button>
+      <button class="toggle-btn" id="ratio-916" onclick="setRatio('9_16')">9:16</button>
+    </div>
+    <!-- 생성 모드 -->
+    <div class="control-group">
+      <span class="control-label">생성</span>
+      <button class="toggle-btn active" id="mode-all" onclick="setMode('all')">모두</button>
+      <button class="toggle-btn" id="mode-char" onclick="setMode('char')">인물만</button>
+      <button class="toggle-btn" id="mode-bg" onclick="setMode('bg')">배경만</button>
+    </div>
+    <button class="btn btn-primary" id="generateBtn" onclick="runGenerate()"><span>✦</span> 생성</button>
     <button class="btn btn-outline" onclick="clearAll()">초기화</button>
   </div>
 
   <div class="scenario-wrap">
     <div class="scenario-label">시나리오 / 장면 묘사</div>
-    <textarea class="scenario-input" id="scenarioInput" placeholder="시나리오를 입력하세요. Claude가 캐릭터와 배경을 자동으로 추출하여 이미지를 생성합니다.
+    <textarea class="scenario-input" id="scenarioInput" placeholder="시나리오를 입력하세요. Claude가 모든 캐릭터와 배경을 자동으로 추출하여 이미지를 생성합니다.
 
 예시: 여리고 성 안, 라합이 두 명의 정탐꾼을 숨기는 장면. 라합은 붉은 끈을 창문에 매달고, 정탐꾼들은 긴장한 표정으로 지붕 위 삼대 더미 아래 숨어있다."></textarea>
   </div>
 
   <div class="alert" id="alertBox"></div>
-  <div class="progress-bar" id="progressBar">
-    <div class="progress-fill" id="progressFill"></div>
-  </div>
+  <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
   <div class="status-msg" id="statusMsg"></div>
   <div id="resultsArea"></div>
 </div>
 
 <script>
 const STORAGE_KEY = 'storyboard_keys_v2';
+let currentRatio = '16_9';
+let currentMode = 'all';
+let currentLightboxUrl = '';
+let currentLightboxName = '';
 
 function loadKeys() {
   try {
@@ -174,6 +194,16 @@ function checkDots() {
 }
 loadKeys();
 
+function setRatio(r) {
+  currentRatio = r;
+  document.getElementById('ratio-169').classList.toggle('active', r === '16_9');
+  document.getElementById('ratio-916').classList.toggle('active', r === '9_16');
+}
+function setMode(m) {
+  currentMode = m;
+  ['all','char','bg'].forEach(k => document.getElementById('mode-'+k).classList.toggle('active', k === m));
+}
+
 function showAlert(msg, type='error') {
   const el = document.getElementById('alertBox');
   el.className = 'alert ' + type;
@@ -187,10 +217,6 @@ function setProgress(pct, msg='') {
   if (msg) document.getElementById('statusMsg').textContent = msg;
 }
 
-// ─── 라이트박스 ───
-let currentLightboxUrl = '';
-let currentLightboxName = '';
-
 function openLightbox(url, name) {
   currentLightboxUrl = url;
   currentLightboxName = name;
@@ -202,30 +228,23 @@ function closeLightbox(e) { if (e.target === document.getElementById('lightbox')
 function closeLightboxDirect() { document.getElementById('lightbox').classList.remove('open'); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightboxDirect(); });
 
-// ─── 다운로드 ───
 async function downloadImage(url, filename) {
   try {
-    const response = await fetch(url);
-    const blob = await response.blob();
+    const res = await fetch(url);
+    const blob = await res.blob();
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = filename + '.jpg';
+    a.download = (filename || 'image') + '.jpg';
     a.click();
     URL.revokeObjectURL(a.href);
-  } catch(e) {
-    // 직접 다운로드 안 되면 새 탭으로 열기
-    window.open(url, '_blank');
-  }
+  } catch(e) { window.open(url, '_blank'); }
 }
-
-function downloadFromLightbox() {
-  downloadImage(currentLightboxUrl, currentLightboxName || 'storyboard');
-}
+function downloadFromLightbox() { downloadImage(currentLightboxUrl, currentLightboxName); }
 
 function copyText(btn, text) {
   navigator.clipboard.writeText(text).then(() => {
     const orig = btn.textContent;
-    btn.textContent = '✓ 복사됨';
+    btn.textContent = '✓';
     setTimeout(() => btn.textContent = orig, 2000);
   });
 }
@@ -247,38 +266,34 @@ async function extractScene(scenario, claudeKey) {
   return data;
 }
 
-async function generateImage(prompt, freepikKey, aspectRatio) {
+async function generateImage(prompt, freepikKey, ratio) {
   const res = await fetch('/api/generate', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt, aspect_ratio: aspectRatio, freepik_key: freepikKey })
+    body: JSON.stringify({ prompt, aspect_ratio: ratio, freepik_key: freepikKey })
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || 'Freepik API 오류');
   return data.image_url;
 }
 
-async function regenerateItem(id, prompt, isPortrait) {
+async function regenerateItem(id, prompt, isChar) {
   const freepikKey = document.getElementById('freepikKey').value.trim();
   if (!freepikKey) { showAlert('Freepik API 키를 입력해주세요.'); return; }
-  const aspectRatio = isPortrait ? '2_3' : document.getElementById('aspectRatio').value;
+  const ratio = isChar ? '9_16' : currentRatio;
   const cardImg = document.getElementById('img-' + id);
   const regenBtn = document.getElementById('regen-' + id);
-  cardImg.className = 'image-box loading' + (isPortrait ? ' portrait' : '');
+  const downBtn = document.getElementById('down-' + id);
+  cardImg.className = 'image-box loading ' + (isChar ? 'ratio-916' : 'ratio-169');
   cardImg.innerHTML = '<div class="spinner"></div><div class="loading-text">재생성 중...</div>';
   if (regenBtn) regenBtn.disabled = true;
   try {
-    const url = await generateImage(prompt, freepikKey, aspectRatio);
-    const name = id;
-    cardImg.className = 'image-box' + (isPortrait ? ' portrait' : '');
-    cardImg.innerHTML = url
-      ? `<img src="${url}" loading="lazy" onclick="openLightbox('${url}','${id}')">`
-      : '<div class="loading-text">생성 실패</div>';
-    // 다운로드 버튼 업데이트
-    const downBtn = document.getElementById('down-' + id);
-    if (downBtn && url) downBtn.onclick = () => downloadImage('${url}', '${id}');
+    const url = await generateImage(prompt, freepikKey, ratio);
+    cardImg.className = 'image-box ' + (isChar ? 'ratio-916' : 'ratio-169');
+    cardImg.innerHTML = url ? `<img src="${url}" loading="lazy" onclick="openLightbox('${url}','${id}')">` : '<div class="loading-text">생성 실패</div>';
+    if (downBtn && url) { const u=url, n=id; downBtn.onclick = () => downloadImage(u, n); }
   } catch(e) {
-    cardImg.className = 'image-box' + (isPortrait ? ' portrait' : '');
+    cardImg.className = 'image-box ' + (isChar ? 'ratio-916' : 'ratio-169');
     cardImg.innerHTML = `<div class="error-card">⚠ ${e.message}</div>`;
   } finally {
     if (regenBtn) regenBtn.disabled = false;
@@ -288,19 +303,22 @@ async function regenerateItem(id, prompt, isPortrait) {
 function renderCards(scene) {
   const container = document.getElementById('resultsArea');
   let html = '';
-  if (scene.characters && scene.characters.length > 0) {
+  const showChar = currentMode === 'all' || currentMode === 'char';
+  const showBg = currentMode === 'all' || currentMode === 'bg';
+
+  if (showChar && scene.characters && scene.characters.length > 0) {
     html += `<div class="section-title">Characters · 캐릭터</div><div class="grid">`;
     scene.characters.forEach(c => {
       const fp = (c.prompt||'').replace(/`/g,'\\`').replace(/'/g,"\\'");
-      const nm = (c.name||'character').replace(/'/g,"\\'");
+      const nm = (c.name||'char').replace(/'/g,"\\'");
       html += `<div class="card">
         <div class="card-head"><div class="card-name">${c.name}</div><div class="card-type">CHARACTER · ${c.description}</div></div>
-        <div class="image-box portrait loading" id="img-${c.id}"><div class="spinner"></div><div class="loading-text">생성 중...</div></div>
+        <div class="image-box ratio-916 loading" id="img-${c.id}"><div class="spinner"></div><div class="loading-text">생성 중...</div></div>
         <div class="card-foot">
           <div class="prompt-mini">${c.prompt||''}</div>
           <div class="card-actions">
             <button class="btn-regen" id="regen-${c.id}" onclick="regenerateItem('${c.id}',\`${fp}\`,true)">🔄 재생성</button>
-            <button class="btn-down" id="down-${c.id}" onclick="downloadImage('','${nm}')">⬇</button>
+            <button class="btn-down" id="down-${c.id}">⬇</button>
             <button class="btn-copy" onclick="copyText(this,\`${fp}\`)">복사</button>
           </div>
         </div>
@@ -308,19 +326,20 @@ function renderCards(scene) {
     });
     html += `</div>`;
   }
-  if (scene.backgrounds && scene.backgrounds.length > 0) {
+
+  if (showBg && scene.backgrounds && scene.backgrounds.length > 0) {
     html += `<div class="section-title">Backgrounds · 배경</div><div class="grid">`;
     scene.backgrounds.forEach(b => {
       const fp = (b.prompt||'').replace(/`/g,'\\`').replace(/'/g,"\\'");
-      const nm = (b.name||'background').replace(/'/g,"\\'");
+      const nm = (b.name||'bg').replace(/'/g,"\\'");
       html += `<div class="card">
         <div class="card-head"><div class="card-name">${b.name}</div><div class="card-type bg-type">BACKGROUND · ${b.description}</div></div>
-        <div class="image-box loading" id="img-${b.id}"><div class="spinner"></div><div class="loading-text">생성 중...</div></div>
+        <div class="image-box ratio-169 loading" id="img-${b.id}"><div class="spinner"></div><div class="loading-text">생성 중...</div></div>
         <div class="card-foot">
           <div class="prompt-mini">${b.prompt||''}</div>
           <div class="card-actions">
             <button class="btn-regen" id="regen-${b.id}" onclick="regenerateItem('${b.id}',\`${fp}\`,false)">🔄 재생성</button>
-            <button class="btn-down" id="down-${b.id}" onclick="downloadImage('','${nm}')">⬇</button>
+            <button class="btn-down" id="down-${b.id}">⬇</button>
             <button class="btn-copy" onclick="copyText(this,\`${fp}\`)">복사</button>
           </div>
         </div>
@@ -335,7 +354,6 @@ async function runGenerate() {
   const claudeKey = document.getElementById('claudeKey').value.trim();
   const freepikKey = document.getElementById('freepikKey').value.trim();
   const scenario = document.getElementById('scenarioInput').value.trim();
-  const aspectRatio = document.getElementById('aspectRatio').value;
   if (!claudeKey) { showAlert('Claude API 키를 입력해주세요.'); return; }
   if (!freepikKey) { showAlert('Freepik API 키를 입력해주세요.'); return; }
   if (!scenario) { showAlert('시나리오를 입력해주세요.'); return; }
@@ -347,35 +365,35 @@ async function runGenerate() {
   try {
     setProgress(10, '🔍 Claude가 장면을 분석하는 중...');
     const scene = await extractScene(scenario, claudeKey);
-    const total = (scene.characters?.length||0) + (scene.backgrounds?.length||0);
-    if (total === 0) { showAlert('추출된 캐릭터/배경이 없어요. 시나리오를 더 구체적으로 작성해보세요.'); return; }
+
+    const chars = currentMode !== 'bg' ? (scene.characters || []) : [];
+    const bgs = currentMode !== 'char' ? (scene.backgrounds || []) : [];
+    const total = chars.length + bgs.length;
+
+    if (total === 0) { showAlert('추출된 항목이 없어요. 시나리오를 더 구체적으로 작성해보세요.'); return; }
     setProgress(20, `✦ ${total}개 항목 추출 완료 — 이미지 생성 시작`);
     renderCards(scene);
+
     const allItems = [
-      ...(scene.characters||[]).map(c => ({...c, isChar:true})),
-      ...(scene.backgrounds||[]).map(b => ({...b, isChar:false}))
+      ...chars.map(c => ({...c, isChar: true})),
+      ...bgs.map(b => ({...b, isChar: false}))
     ];
     let done = 0;
     await Promise.allSettled(allItems.map(async item => {
       try {
-        const url = await generateImage(item.prompt, freepikKey, item.isChar ? '2_3' : aspectRatio);
+        const ratio = item.isChar ? '9_16' : currentRatio;
+        const url = await generateImage(item.prompt, freepikKey, ratio);
         const cardImg = document.getElementById('img-' + item.id);
         const downBtn = document.getElementById('down-' + item.id);
         if (cardImg) {
-          cardImg.className = 'image-box' + (item.isChar ? ' portrait' : '');
-          cardImg.innerHTML = url
-            ? `<img src="${url}" loading="lazy" onclick="openLightbox('${url}','${item.name}')">`
-            : '<div class="loading-text">생성 실패</div>';
+          cardImg.className = 'image-box ' + (item.isChar ? 'ratio-916' : 'ratio-169');
+          cardImg.innerHTML = url ? `<img src="${url}" loading="lazy" onclick="openLightbox('${url}','${item.name}')">` : '<div class="loading-text">생성 실패</div>';
         }
-        // 다운로드 버튼에 URL 연결
-        if (downBtn && url) {
-          const u = url; const n = item.name;
-          downBtn.onclick = () => downloadImage(u, n);
-        }
+        if (downBtn && url) { const u=url, n=item.name; downBtn.onclick = () => downloadImage(u, n); }
       } catch(e) {
         const cardImg = document.getElementById('img-' + item.id);
         if (cardImg) {
-          cardImg.className = 'image-box' + (item.isChar ? ' portrait' : '');
+          cardImg.className = 'image-box ' + (item.isChar ? 'ratio-916' : 'ratio-169');
           cardImg.innerHTML = `<div class="error-card">⚠ ${e.message}</div>`;
         }
       } finally {
