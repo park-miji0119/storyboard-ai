@@ -71,6 +71,8 @@ header { padding: 36px 0 24px; border-bottom: 1px solid var(--border); margin-bo
 .btn-regen { flex: 1; padding: 7px 10px; background: rgba(200,145,58,0.1); border: 1px solid rgba(200,145,58,0.3); border-radius: 6px; color: var(--accent); font-size: 11px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; }
 .btn-regen:hover { background: rgba(200,145,58,0.18); border-color: var(--accent); }
 .btn-regen:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-down { padding: 7px 10px; background: rgba(58,139,90,0.1); border: 1px solid rgba(58,139,90,0.3); border-radius: 6px; color: #70c090; font-size: 11px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+.btn-down:hover { background: rgba(58,139,90,0.2); border-color: #70c090; }
 .btn-copy { padding: 7px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; color: var(--text3); font-size: 11px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
 .btn-copy:hover { color: var(--text2); border-color: var(--border2); }
 .error-card { padding: 14px 16px; background: rgba(139,32,32,0.1); border: 1px solid rgba(139,32,32,0.3); border-radius: 8px; font-size: 12px; color: #e06060; margin: 12px 14px; }
@@ -80,6 +82,8 @@ header { padding: 36px 0 24px; border-bottom: 1px solid var(--border); margin-bo
 .lightbox img { max-width: 92vw; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 20px 80px rgba(0,0,0,0.8); cursor: default; }
 .lightbox-close { position: fixed; top: 20px; right: 24px; color: rgba(255,255,255,0.6); font-size: 28px; cursor: pointer; line-height: 1; transition: color 0.2s; }
 .lightbox-close:hover { color: #fff; }
+.lightbox-down { position: fixed; top: 18px; right: 64px; background: rgba(58,139,90,0.2); border: 1px solid rgba(58,139,90,0.5); color: #70c090; padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; transition: all 0.2s; }
+.lightbox-down:hover { background: rgba(58,139,90,0.35); }
 .lightbox-caption { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); font-size: 12px; color: rgba(255,255,255,0.45); letter-spacing: 1px; }
 .alert { padding: 12px 16px; border-radius: 8px; font-size: 12.5px; margin-bottom: 16px; display: none; }
 .alert.error { display: block; background: rgba(139,32,32,0.15); border: 1px solid rgba(139,32,32,0.4); color: #e07070; }
@@ -90,6 +94,7 @@ header { padding: 36px 0 24px; border-bottom: 1px solid var(--border); margin-bo
 
 <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
   <span class="lightbox-close" onclick="closeLightboxDirect()">✕</span>
+  <button class="lightbox-down" id="lightbox-down-btn" onclick="downloadFromLightbox()">⬇ 다운로드</button>
   <img id="lightbox-img" src="" alt="">
   <div class="lightbox-caption" id="lightbox-caption"></div>
 </div>
@@ -182,14 +187,40 @@ function setProgress(pct, msg='') {
   if (msg) document.getElementById('statusMsg').textContent = msg;
 }
 
-function openLightbox(url, caption) {
+// ─── 라이트박스 ───
+let currentLightboxUrl = '';
+let currentLightboxName = '';
+
+function openLightbox(url, name) {
+  currentLightboxUrl = url;
+  currentLightboxName = name;
   document.getElementById('lightbox-img').src = url;
-  document.getElementById('lightbox-caption').textContent = caption || '';
+  document.getElementById('lightbox-caption').textContent = name || '';
   document.getElementById('lightbox').classList.add('open');
 }
 function closeLightbox(e) { if (e.target === document.getElementById('lightbox')) closeLightboxDirect(); }
 function closeLightboxDirect() { document.getElementById('lightbox').classList.remove('open'); }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightboxDirect(); });
+
+// ─── 다운로드 ───
+async function downloadImage(url, filename) {
+  try {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename + '.jpg';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  } catch(e) {
+    // 직접 다운로드 안 되면 새 탭으로 열기
+    window.open(url, '_blank');
+  }
+}
+
+function downloadFromLightbox() {
+  downloadImage(currentLightboxUrl, currentLightboxName || 'storyboard');
+}
 
 function copyText(btn, text) {
   navigator.clipboard.writeText(text).then(() => {
@@ -205,7 +236,6 @@ function clearAll() {
   hideAlert();
 }
 
-// ✅ 이게 핵심 수정 — Claude를 직접 호출하지 않고 /api/claude 서버를 통해 호출
 async function extractScene(scenario, claudeKey) {
   const res = await fetch('/api/claude', {
     method: 'POST',
@@ -239,10 +269,14 @@ async function regenerateItem(id, prompt, isPortrait) {
   if (regenBtn) regenBtn.disabled = true;
   try {
     const url = await generateImage(prompt, freepikKey, aspectRatio);
+    const name = id;
     cardImg.className = 'image-box' + (isPortrait ? ' portrait' : '');
     cardImg.innerHTML = url
       ? `<img src="${url}" loading="lazy" onclick="openLightbox('${url}','${id}')">`
       : '<div class="loading-text">생성 실패</div>';
+    // 다운로드 버튼 업데이트
+    const downBtn = document.getElementById('down-' + id);
+    if (downBtn && url) downBtn.onclick = () => downloadImage('${url}', '${id}');
   } catch(e) {
     cardImg.className = 'image-box' + (isPortrait ? ' portrait' : '');
     cardImg.innerHTML = `<div class="error-card">⚠ ${e.message}</div>`;
@@ -258,7 +292,19 @@ function renderCards(scene) {
     html += `<div class="section-title">Characters · 캐릭터</div><div class="grid">`;
     scene.characters.forEach(c => {
       const fp = (c.prompt||'').replace(/`/g,'\\`').replace(/'/g,"\\'");
-      html += `<div class="card"><div class="card-head"><div class="card-name">${c.name}</div><div class="card-type">CHARACTER · ${c.description}</div></div><div class="image-box portrait loading" id="img-${c.id}"><div class="spinner"></div><div class="loading-text">생성 중...</div></div><div class="card-foot"><div class="prompt-mini">${c.prompt||''}</div><div class="card-actions"><button class="btn-regen" id="regen-${c.id}" onclick="regenerateItem('${c.id}',\`${fp}\`,true)">🔄 재생성</button><button class="btn-copy" onclick="copyText(this,\`${fp}\`)">복사</button></div></div></div>`;
+      const nm = (c.name||'character').replace(/'/g,"\\'");
+      html += `<div class="card">
+        <div class="card-head"><div class="card-name">${c.name}</div><div class="card-type">CHARACTER · ${c.description}</div></div>
+        <div class="image-box portrait loading" id="img-${c.id}"><div class="spinner"></div><div class="loading-text">생성 중...</div></div>
+        <div class="card-foot">
+          <div class="prompt-mini">${c.prompt||''}</div>
+          <div class="card-actions">
+            <button class="btn-regen" id="regen-${c.id}" onclick="regenerateItem('${c.id}',\`${fp}\`,true)">🔄 재생성</button>
+            <button class="btn-down" id="down-${c.id}" onclick="downloadImage('','${nm}')">⬇</button>
+            <button class="btn-copy" onclick="copyText(this,\`${fp}\`)">복사</button>
+          </div>
+        </div>
+      </div>`;
     });
     html += `</div>`;
   }
@@ -266,7 +312,19 @@ function renderCards(scene) {
     html += `<div class="section-title">Backgrounds · 배경</div><div class="grid">`;
     scene.backgrounds.forEach(b => {
       const fp = (b.prompt||'').replace(/`/g,'\\`').replace(/'/g,"\\'");
-      html += `<div class="card"><div class="card-head"><div class="card-name">${b.name}</div><div class="card-type bg-type">BACKGROUND · ${b.description}</div></div><div class="image-box loading" id="img-${b.id}"><div class="spinner"></div><div class="loading-text">생성 중...</div></div><div class="card-foot"><div class="prompt-mini">${b.prompt||''}</div><div class="card-actions"><button class="btn-regen" id="regen-${b.id}" onclick="regenerateItem('${b.id}',\`${fp}\`,false)">🔄 재생성</button><button class="btn-copy" onclick="copyText(this,\`${fp}\`)">복사</button></div></div></div>`;
+      const nm = (b.name||'background').replace(/'/g,"\\'");
+      html += `<div class="card">
+        <div class="card-head"><div class="card-name">${b.name}</div><div class="card-type bg-type">BACKGROUND · ${b.description}</div></div>
+        <div class="image-box loading" id="img-${b.id}"><div class="spinner"></div><div class="loading-text">생성 중...</div></div>
+        <div class="card-foot">
+          <div class="prompt-mini">${b.prompt||''}</div>
+          <div class="card-actions">
+            <button class="btn-regen" id="regen-${b.id}" onclick="regenerateItem('${b.id}',\`${fp}\`,false)">🔄 재생성</button>
+            <button class="btn-down" id="down-${b.id}" onclick="downloadImage('','${nm}')">⬇</button>
+            <button class="btn-copy" onclick="copyText(this,\`${fp}\`)">복사</button>
+          </div>
+        </div>
+      </div>`;
     });
     html += `</div>`;
   }
@@ -302,11 +360,17 @@ async function runGenerate() {
       try {
         const url = await generateImage(item.prompt, freepikKey, item.isChar ? '2_3' : aspectRatio);
         const cardImg = document.getElementById('img-' + item.id);
+        const downBtn = document.getElementById('down-' + item.id);
         if (cardImg) {
           cardImg.className = 'image-box' + (item.isChar ? ' portrait' : '');
           cardImg.innerHTML = url
             ? `<img src="${url}" loading="lazy" onclick="openLightbox('${url}','${item.name}')">`
             : '<div class="loading-text">생성 실패</div>';
+        }
+        // 다운로드 버튼에 URL 연결
+        if (downBtn && url) {
+          const u = url; const n = item.name;
+          downBtn.onclick = () => downloadImage(u, n);
         }
       } catch(e) {
         const cardImg = document.getElementById('img-' + item.id);
