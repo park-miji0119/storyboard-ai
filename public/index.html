@@ -873,7 +873,8 @@ async function generateAllImages(scenes, apiKey, aspectRatio, resolution) {
     statusEl.innerHTML = `<span class="spinner"></span> <span style="color: var(--accent)">생성 중... (${i+1}/${scenes.length})</span>`;
 
     try {
-      const imageUrl = await generateSingleImage(scene.prompt_en, apiKey, aspectRatio, resolution);
+      const finalPrompt = scene.prompt_en + ', ' + stylePrompt;
+const imageUrl = await generateSingleImage(finalPrompt, apiKey, aspectRatio, resolution);
       
       if (imageUrl) {
         resultEl.innerHTML = `<img src="${imageUrl}" alt="Scene ${scene.scene_number}" loading="lazy" />`;
