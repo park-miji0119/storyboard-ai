@@ -306,6 +306,23 @@ async function regenerateItem(id, prompt){
     cardImg.innerHTML = `<div class="error-msg">⚠ ${e.message}</div>`;
   }
 }
+async function regenerateItem(id, prompt){
+  const freepikKey = document.getElementById('freepikKey').value.trim();
+  const aspectRatio = document.getElementById('aspectRatio').value;
+  const cardImg = document.getElementById('img-' + id);
+  cardImg.className = 'image-box loading';
+  cardImg.innerHTML = `<div class="spinner"></div><span style="font-size:11px;color:var(--text2);">재생성 중...</span>`;
+  try {
+    const url = await generateImage(prompt, freepikKey, aspectRatio);
+    cardImg.className = 'image-box';
+    cardImg.innerHTML = url
+      ? `<img src="${url}" loading="lazy" onclick="openLightbox('${url}','')"/>`
+      : `<div class="error-msg">생성 실패</div>`;
+  } catch(e){
+    cardImg.className = 'image-box';
+    cardImg.innerHTML = `<div class="error-msg">⚠ ${e.message}</div>`;
+  }
+}
 </script>
 </body>
 </html>
