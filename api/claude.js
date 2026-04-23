@@ -22,20 +22,38 @@ export default async function handler(req, res) {
           content: `당신은 영화/애니메이션 프리프로덕션 전문가입니다. 아래 시나리오를 분석해서 JSON으로만 응답하세요.
 
 규칙:
-- characters: 각 인물을 개별 항목으로 분리 (그룹 X)
-- backgrounds: 인물 없는 순수 배경
-- prompt는 영어로, Seedream AI용
-- 그림체: hyperrealistic 3D animation, Prince of Egypt meets Pixar live-action hybrid, photorealistic skin texture, dramatic lighting, cinematic quality, NOT cartoon, NOT anime
-- 캐릭터: solo portrait, one person only, upper body
-- 배경: empty scene, no people, cinematic establishing shot
-- name/description은 한국어
+1. characters: 시나리오에 언급된 모든 인물을 빠짐없이 각각 별도 항목으로 추출 (절대 묶거나 생략하지 말 것)
+2. backgrounds: 등장하는 배경/장소 목록 (인물 없는 순수 배경)
+3. 각 prompt는 반드시 영어로 작성
+4. 그림체: hyperrealistic 3D animation, Prince of Egypt meets Pixar live-action hybrid, photorealistic skin texture, dramatic cinematic lighting, NOT cartoon, NOT anime, NOT stylized
+5. 캐릭터 prompt 필수 조건: solo portrait, one person only, front-facing, looking directly at camera, symmetrical composition, upper body, neutral background
+6. 배경 prompt 필수 조건: empty scene, absolutely no people, no humans, no figures, cinematic establishing shot, wide angle
+7. name과 description은 한국어로
 
-시나리오: ${scenario}
+시나리오:
+${scenario}
 
-JSON 형식:
-{"characters":[{"id":"c1","name":"이름","description":"설명","prompt":"English prompt..."}],"backgrounds":[{"id":"b1","name":"이름","description":"설명","prompt":"English prompt..."}]}
+JSON 형식 (이 형식 그대로, 다른 텍스트 없이):
+{
+  "characters": [
+    {
+      "id": "c1",
+      "name": "인물 이름",
+      "description": "인물 한줄 설명",
+      "prompt": "solo portrait, one person only, front-facing, looking directly at camera, upper body, [character appearance details], hyperrealistic 3D animation, Prince of Egypt meets Pixar live-action hybrid, photorealistic skin texture, dramatic lighting, neutral dark background, NOT cartoon NOT anime"
+    }
+  ],
+  "backgrounds": [
+    {
+      "id": "b1",
+      "name": "배경 이름",
+      "description": "배경 한줄 설명",
+      "prompt": "empty scene, no people, no humans, [location details], cinematic establishing shot, hyperrealistic, dramatic lighting, wide angle"
+    }
+  ]
+}
 
-JSON만 출력.`
+JSON만 출력. 마크다운 없이.`
         }]
       })
     });
